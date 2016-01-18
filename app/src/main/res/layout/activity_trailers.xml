@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/all_trailers_list"/>
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_width_height"
+        android:layout_height="@dimen/progress_bar_width_height"
+        android:id="@+id/progressBar"
+        android:max="500"
+        android:progress="0"
+        android:layout_gravity="center"
+        android:progressDrawable="@drawable/circ_prog"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+    <com.example.punit.popularmovies.Fonts.CustomNormalTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/no_internet_msg"
+        android:text="@string/no_internet_msg"
+        android:padding="25dp"
+        android:gravity="center"/>
+    <com.example.punit.popularmovies.Fonts.CustomButtonView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/no_internet_msg"
+        android:text="@string/try_again"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_back"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:id="@+id/try_again_btn"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"/>
+    <com.example.punit.popularmovies.Fonts.CustomNormalTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_trailers"
+        android:text="@string/no_trailers"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_below="@+id/no_internet_msg"/>
+
+</RelativeLayout>

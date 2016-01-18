@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="8dp"
+    android:background="@color/colorWhite"
+    android:elevation="4dp">
+    <com.example.punit.popularmovies.Fonts.CustomBoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="16dp"
+        android:id="@+id/first_reviewer"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"/>
+    <com.example.punit.popularmovies.Fonts.CustomNormalTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/first_review"
+        android:layout_below="@+id/first_reviewer"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:background="@drawable/review_text_back"/>
+    <com.example.punit.popularmovies.Fonts.CustomBoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/first_review"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textAllCaps="true"
+        android:text="READ ALL REVIEWS"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/read_all_reviews"
+        android:clickable="true"
+        android:visibility="gone"
+        android:background="@drawable/review_text_back"
+        android:padding="4dp"/>
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_width_height"
+        android:layout_height="@dimen/progress_bar_width_height"
+        android:id="@+id/progressBar"
+        android:max="500"
+        android:progress="0"
+        android:layout_gravity="center"
+        android:progressDrawable="@drawable/circ_prog"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+    <com.example.punit.popularmovies.Fonts.CustomBoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/no_reviews"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

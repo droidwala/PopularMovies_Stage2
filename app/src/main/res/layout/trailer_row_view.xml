@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:id="@+id/video_frame"
+            android:layout_alignParentTop="true">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/thumbnail_img"
+                android:scaleType="centerCrop"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/scrim_gradient"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/play_video"
+                android:id="@+id/play_video"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/abc_ic_menu_share_mtrl_alpha"
+                android:layout_gravity="top|right"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="50dp"
+                android:paddingBottom="50dp"
+                android:id="@+id/share_video"/>
+        </FrameLayout>
+        <com.example.punit.popularmovies.Fonts.CustomBoldTextView
+            android:id="@+id/video_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/video_frame"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginBottom="16dp"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
