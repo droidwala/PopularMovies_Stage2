@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +49,9 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used to display movies by Genre selected from NavigationView inside MainActivity
+ */
 public class GenreFragment extends Fragment {
 
     @Bind(R.id.gridview) GridView gridView;
@@ -60,19 +62,18 @@ public class GenreFragment extends Fragment {
     @Bind(R.id.retry_volley) Button retry_volley;
     @Bind(R.id.volley_error_msg) TextView volley_error_msg;
     @Nullable @Bind(R.id.detail_fragment) FrameLayout detailFragment;
+
     TextView toolbar_title;
     GridAdapter adapter;
     ArrayList<Movie> movies;
     ConnectionDetector cd;
     DetailFragment dfrag;
+
     private static String CAT_MOVIE_BASE_URL = "http://api.themoviedb.org/3/genre/";
     private static String CAT_MOVIE_END_URL ="/movies?api_key=";
     private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w342";
     private static String TAG="GENRE";
     private static String id,title;//used to show movies by genre id passed as arguments
-
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +113,6 @@ public class GenreFragment extends Fragment {
 
         //Below condition makes sure no API call is made during orientation changes.
         if(movies.size()>0){
-            Log.d("TAG","Do we come inside this block of code");
             adapter = new GridAdapter(getActivity(),R.layout.grid_item,movies);
             gridView.setAdapter(adapter);
             if(detailFragment!=null){

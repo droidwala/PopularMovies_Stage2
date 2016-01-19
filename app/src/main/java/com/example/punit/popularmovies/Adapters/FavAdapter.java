@@ -20,6 +20,10 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Used inside PopularMoviesFragment to populate Favorite movies in Gridview..
+ */
+
 public class FavAdapter extends ArrayAdapter<String> {
 
     private ArrayList<Movie> movies = new ArrayList<Movie>();
@@ -30,7 +34,6 @@ public class FavAdapter extends ArrayAdapter<String> {
         mContext = context;
         this.movies = movies;
     }
-
 
     @Override
     public int getCount(){

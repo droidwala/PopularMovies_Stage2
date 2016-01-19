@@ -33,8 +33,13 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Activity used to display Trailers of particular movie..
+ */
+
 public class TrailersActivity extends AppCompatActivity {
 
+    //Views Initialization..
     @Bind(R.id.all_trailers_list) RecyclerView rv;
     @Bind(R.id.toolbar) Toolbar tbar;
     @Bind(R.id.toolbar_txt) TextView toolbar_title;
@@ -42,14 +47,18 @@ public class TrailersActivity extends AppCompatActivity {
     @Bind(R.id.no_internet_msg) TextView no_internet_msg;
     @Bind(R.id.no_trailers) TextView no_trailers_msg;
     @Bind(R.id.try_again_btn) Button try_again;
+
+    //static variables..
     private static String MOVIE_TRAILER_BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static String MOVIE_TRAILER_END_URL = "/videos?api_key=";
     private static String THUMBNAIL_URL ="http://img.youtube.com/vi/";
     private static String YOUTUBE_VIDEO_URL="https://www.youtube.com/watch?v=";
     private static final String SAVE_INSTANCE = "VIDEOS";
+    private static final String TAG="TRAILERS";
+
+    //Instance variables..
     private Movie movie;
     ArrayList<Video> videos;
-    private static final String TAG="TRAILERS";
     TrailerAdapter adapter;
 
     @Override
@@ -57,26 +66,34 @@ public class TrailersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trailers);
         ButterKnife.bind(this);
+        //Setting up Toolbar
         setSupportActionBar(tbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar_title.setText("TRAILERS");
+
+        //Setting up RecyclerView
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
+
+        //Get movie object passed on from Detail Activity/Detail Fragment..
         movie = getIntent().getParcelableExtra("MOVIE");
+
+        //Restore videos Arraylist saved during orientation change inside onSaveInstanceState() method..
         if(savedInstanceState!=null){
             videos = (ArrayList<Video>) savedInstanceState.getSerializable(SAVE_INSTANCE);
-            Log.d("STACK","Just an another orientation change");
             adapter = new TrailerAdapter(TrailersActivity.this,videos);
             rv.setAdapter(adapter);
         }
+        //Else Fetch Trailers of the movie..
         else {
             videos = new ArrayList<Video>();
             FetchData(movie.getId());
-            Log.d("STACK","fetching movies from server");
         }
+
+        //Re-Fetch Trailers in case of network connection issue..
         try_again.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,12 +103,14 @@ public class TrailersActivity extends AppCompatActivity {
 
     }
 
+    //Cancel Pending API requests..
     @Override
     protected void onPause() {
         super.onPause();
         AppController.getInstance().cancelPendingRequests(TAG);
     }
 
+    //Fetches Trailer of given movie by movie_id From REST API..
     private void FetchData(String movie_id){
       hideElements();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
@@ -125,6 +144,7 @@ public class TrailersActivity extends AppCompatActivity {
                         }
                     }
                 },new Response.ErrorListener() {
+            //Show failures message on Error Response..
             @Override
             public void onErrorResponse(VolleyError error) {
                 rv.setVisibility(View.INVISIBLE);
@@ -137,20 +157,25 @@ public class TrailersActivity extends AppCompatActivity {
          AppController.getInstance().addToRequestQueue(request,TAG);
     }
 
+    //Hide elements during API call
     private void hideElements(){
         pbar.setVisibility(View.VISIBLE);
         rv.setVisibility(View.INVISIBLE);
         no_internet_msg.setVisibility(View.INVISIBLE);
         try_again.setVisibility(View.INVISIBLE);
     }
+
+    //Show Elements after API call is completed..
     private void showElements(){
         pbar.setVisibility(View.INVISIBLE);
         rv.setVisibility(View.VISIBLE);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            //Back press handling ..
             case android.R.id.home:
                 finish();
                 break;
@@ -158,6 +183,7 @@ public class TrailersActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Save videos Arraylist to avoid re-fetching of data during orientation changes..
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

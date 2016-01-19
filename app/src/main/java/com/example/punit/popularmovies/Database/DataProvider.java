@@ -9,14 +9,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+/**
+ * Content Provider implementation to provide abstraction for Favorites Database used for storing favorite movies of the user..
+ */
+
 public class DataProvider extends ContentProvider {
 
     DbHelper dbHelper;
-    public static final Uri FAV_PROVIDER_URI = Uri.parse("content://com.example.punit.popularmovies.provider/data");
 
+    //URI for Favorites table
+    public static final Uri FAV_PROVIDER_URI = Uri.parse("content://com.example.punit.popularmovies.provider/data");
     private static final int DATA_ALL_ROWS = 1;
     private static final int DATA_SINGLE_ROW = 2;
     private static final UriMatcher urimatcher;
+
+    //static initializer
     static {
         urimatcher = new UriMatcher(UriMatcher.NO_MATCH);
         urimatcher.addURI("com.example.punit.popularmovies.provider","data",DATA_ALL_ROWS);
@@ -30,6 +37,7 @@ public class DataProvider extends ContentProvider {
         return true;
     }
 
+    //Query method from Content Resolver calls this method..
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -55,6 +63,7 @@ public class DataProvider extends ContentProvider {
         return null;
     }
 
+    //Insert method from Content Resolver calls this method.
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -72,6 +81,7 @@ public class DataProvider extends ContentProvider {
 
     }
 
+    //Delete method from Content Resolver call this method
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -90,6 +100,7 @@ public class DataProvider extends ContentProvider {
         return count;
     }
 
+    //Update method from Content Resolver call this method
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

@@ -7,7 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,11 +21,17 @@ import com.example.punit.popularmovies.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used to host several fragments like PopularMoviesFragment,UpcomingMoviesFragment,GenreFragment,etc.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    //Views Initialization
     @Bind(R.id.navigation_view) NavigationView navigationView;
     @Bind(R.id.toolbar) Toolbar tbar;
     @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
+
+    //Instance variables..
     private ActionBarDrawerToggle toggle;
     private PopularMoviesFragment pfragment;
     private UpcomingMoviesFragment upcomingMoviesFragment;
@@ -137,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Adding popular movies fragment to stack
     private void showPopularMoviesFragment(){
-        Log.d("STACK","showing popular movies fragment...");
         if(pfragment == null){
             pfragment = new PopularMoviesFragment();
          }

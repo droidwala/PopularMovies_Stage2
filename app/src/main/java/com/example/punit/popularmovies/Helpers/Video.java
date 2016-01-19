@@ -2,6 +2,9 @@ package com.example.punit.popularmovies.Helpers;
 
 import java.io.Serializable;
 
+/**
+ * POJO class Video to store video details.
+ */
 public class Video implements Serializable{
   private String image_url;
   private String  title;

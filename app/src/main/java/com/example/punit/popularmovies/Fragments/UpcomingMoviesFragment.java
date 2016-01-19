@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used to display upcoming movies
+ */
 public class UpcomingMoviesFragment extends Fragment {
 
     @Bind(R.id.gridview) GridView gridView;

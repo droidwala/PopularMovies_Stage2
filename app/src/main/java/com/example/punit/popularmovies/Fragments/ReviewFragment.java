@@ -33,6 +33,10 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used to display review of particular movie inside detail Activity
+ * Other logic is same as DualPaneReviewFragment..
+ */
 public class ReviewFragment extends Fragment implements View.OnClickListener{
 
 
@@ -54,7 +58,6 @@ public class ReviewFragment extends Fragment implements View.OnClickListener{
         reviews = new ArrayList<Review>();
         if(savedInstanceState!=null){
             reviews = (ArrayList<Review>) savedInstanceState.getSerializable(SAVE_INSTANCE);
-            Log.d("STACK","We don't fetch data again on Orientation Change");
         }
     }
 

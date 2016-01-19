@@ -13,6 +13,9 @@ import com.example.punit.popularmovies.R;
 
 import java.util.ArrayList;
 
+/**
+ * Used by SearchActivity to display Search Results got through Search API call..
+ */
 public class SearchListAdapter extends ArrayAdapter<String> {
 
     private Context mContext;

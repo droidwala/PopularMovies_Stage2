@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 
 import java.util.HashMap;
 
+/**
+ * Helper class to implement FontCache functionality to be used inside Custom Views..
+ */
 public class FontCache {
     private static HashMap<String,Typeface> fontMap = new HashMap<String,Typeface>();
 

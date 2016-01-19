@@ -16,6 +16,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+/**
+ * Used by TrailersActivity to display trailer of particular movie..
+ */
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.RVHolder> {
 
     private Context mContext;
@@ -32,6 +35,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.RVHolder
         RVHolder rvHolder = new RVHolder(v,new RVHolder.ViewHolderClicks() {
             @Override
             public void Click_Handle(View v, int position) {
+                /**
+                 *If user clicks on Play Video or any where on thumbnail we open the video using action_view intent by passing video of the url..
+                 * Whichever App supports ACTION_VIEW as intent-filter would show up as option for user to see the video..
+                 * Else if user clicks on Share Icon then url of the video would be shared using the apps supporting required action..
+                 */
                      if(v.getId()==R.id.play_video || v.getId() == R.id.thumbnail_img){
                          Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(videos.get(position).getVideo_url()));
                          mContext.startActivity(i);
@@ -64,6 +72,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.RVHolder
         return videos.size();
     }
 
+    //Implement click handling using ViewHolderClicks Interface..
     public static class RVHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView video_image;
@@ -86,9 +95,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.RVHolder
 
         @Override
         public void onClick(View view) {
+           //Adapter position is passed along with view..
            mListener.Click_Handle(view,getAdapterPosition());
         }
 
+        //Used for handling clicks..
         public static interface ViewHolderClicks{
             public void Click_Handle(View v,int position);
         }

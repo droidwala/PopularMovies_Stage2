@@ -30,19 +30,29 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used during Dual Pane Layout mode (Tablet in Landscape mode) inside DetailFragment to display First Review of particular movie
+ */
+
 public class DualPaneReviewFragment extends Fragment implements View.OnClickListener{
 
+    //Views initialization using ButterKnife
     @Bind(R.id.progressBar) ProgressBar pbar;
     @Bind(R.id.first_reviewer) TextView first_reviewer;
     @Bind(R.id.first_review) TextView first_review;
     @Bind(R.id.read_all_reviews) TextView read_all_reviews;
     @Bind(R.id.no_reviews) TextView no_review_msg;
+
+    //static variables
     private static String REVIEW_START_URL = "http://api.themoviedb.org/3/movie/";
     private static String REVIEW_END_URL = "/reviews?api_key=";
+
+    //instance variables
     private ArrayList<Review> reviews;
     private static final String TAG = "REVIEW";
     private static final String SAVE_INSTANCE = "REVIEW";
     Movie movie;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,7 +60,6 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
         reviews = new ArrayList<Review>();
         if(savedInstanceState!=null){
             reviews = (ArrayList<Review>) savedInstanceState.getSerializable(SAVE_INSTANCE);
-            Log.d("STACK", "We don't fetch data again on Orientation Change");
         }
     }
 
@@ -66,6 +75,7 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         movie = getParentFragment().getArguments().getParcelable("MOVIE");
+        //Avoid re-fetching of reviews during orientation changes..
         if(reviews.size()>0){
             Review_Logic();
         }
@@ -90,7 +100,6 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
     }
 
     private void FetchData(String movie_id) {
-        Log.d("STACK","Do we fetch reviews again on orientation change");
         hideElements();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 REVIEW_START_URL + movie_id + REVIEW_END_URL + getResources().getString(R.string.api_key),
@@ -137,6 +146,10 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
     }
 
 
+    /**
+     * Checks Size of Reviews Arraylist and depending on size sets the value of first_reviewer,first_review,
+     * read_all_reviews and other view elements accordingly
+     */
     private void Review_Logic(){
         if(reviews.size()>0){
             showElements();
@@ -152,6 +165,7 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
             no_review_msg.setText("Sorry,No Reviews Found!");
         }
     }
+
     private void hideElements(){
         first_review.setVisibility(View.INVISIBLE);
         first_reviewer.setVisibility(View.INVISIBLE);
@@ -165,9 +179,9 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
         pbar.setVisibility(View.INVISIBLE);
     }
 
+    //Handles click on First Review and Read all reviews textviews.
     @Override
     public void onClick(View view) {
-
         if(first_reviewer.getVisibility()== View.VISIBLE) {
             if (view.getId() == R.id.first_review || view.getId() == R.id.read_all_reviews) {
                 Intent i = new Intent(getActivity(), All_Reviews_Activity.class);
@@ -177,13 +191,14 @@ public class DualPaneReviewFragment extends Fragment implements View.OnClickList
                 startActivity(i);
             }
         }
-        else{
+        else{//This happens when we face network communication issue during Reviews API call..
             if(view.getId() == R.id.read_all_reviews){
                 FetchData(movie.getId());
             }
         }
     }
 
+    //Save reviews ArrayList during orientation changes..
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

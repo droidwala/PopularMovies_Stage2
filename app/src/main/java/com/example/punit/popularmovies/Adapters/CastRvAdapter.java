@@ -14,6 +14,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+/**
+ * Used by CastFragment to display Cast details of the movie inside DetailActivity in RecyclerView..
+ */
 public class CastRvAdapter extends RecyclerView.Adapter<CastRvAdapter.RVHolder>{
 
     private Context mContext;

@@ -58,9 +58,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
-
+/**
+ * Used to display Popular Movies/Highly Rated/Favorite movies depending on Filter Set from FilterActivity class
+ */
 public class PopularMoviesFragment extends Fragment{
 
+    //View Initialization using ButterKnife
     @Bind(R.id.gridview) GridView gridView;
     @Bind(R.id.progressBar) ProgressBar pbar;
     @Bind(R.id.rl_internet) RelativeLayout rl_internet;
@@ -70,10 +73,21 @@ public class PopularMoviesFragment extends Fragment{
     @Bind(R.id.browse_movies) Button browse_movies;
     @Bind(R.id.volley_error_msg) TextView volley_error_msg;
     @Bind(R.id.no_fav_added) RelativeLayout no_fav_added;
-    @Nullable @Bind(R.id.detail_fragment) FrameLayout detailFragment;
+    @Nullable @Bind(R.id.detail_fragment) FrameLayout detailFragment;//define for Dual Pane Layout
+
+    //Instance variables
     GridAdapter adapter;
     FavAdapter favAdapter;
     ArrayList<Movie> movies;
+    private MenuItem menu_item;
+    TextView toolbar_title;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    ConnectionDetector cd;
+    DetailFragment dfrag;
+    private EventBus bus = EventBus.getDefault();
+
+    //static variables
     private static String MOVIES_URL = "http://api.themoviedb.org/3/discover/movie?api_key=";
     private static String SORT_BY_POPULAR="http://api.themoviedb.org/3/movie/popular?api_key=";
     private static String SORT_BY_RATING="http://api.themoviedb.org/3/movie/top_rated?api_key=";
@@ -86,19 +100,11 @@ public class PopularMoviesFragment extends Fragment{
     private static final int INTENT_REQ = 99;
     private static final String FAV_TITLE = "Favorites";
     private static final String TITLE= "Popular Movies";
-    private MenuItem menu_item;
-    TextView toolbar_title;
-    SharedPreferences preferences;
-    SharedPreferences.Editor editor;
-    ConnectionDetector cd;
-    DetailFragment dfrag;
-    private EventBus bus = EventBus.getDefault();
-
 
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bus.register(this);
+        bus.register(this);//register for Delete Event (event listening to removing favorites from the list inside detail fragment)
         setHasOptionsMenu(true);
         cd = new ConnectionDetector(getActivity().getApplicationContext());
         preferences = getActivity().getSharedPreferences(PREFS_NAME,0);
@@ -127,7 +133,7 @@ public class PopularMoviesFragment extends Fragment{
         toolbar_title.setText(TITLE);
         //Below condition makes sure no API call is made during orientation changes.
         if(movies.size()>0){
-            Log.d("XYZA","Movies coming from savedInstance...");
+            //If else logic to decide which adapter to use..
             if(preferences.getBoolean(FILTER_FAVORITES,false)) {
                 favAdapter = new FavAdapter(getActivity(), R.layout.grid_item, movies);
                 gridView.setAdapter(favAdapter);
@@ -137,6 +143,8 @@ public class PopularMoviesFragment extends Fragment{
                 gridView.setAdapter(adapter);
             }
 
+            //Checks whether detailFragment is present(TABLET LAYOUT LANDSCAPE MODE) or not
+            // and accordingly set content of this layout to show detail of first element in corresponding gridview in left fragment
             if(detailFragment!=null){
                 dfrag = new DetailFragment();
                 Bundle b = new Bundle();
@@ -153,12 +161,21 @@ public class PopularMoviesFragment extends Fragment{
         else{
             CheckConnectionAndFetch();
         }
+
+        /**
+         * Either opens up new detail activity or shows detail inside detail fragment on right side
+         * depending on the screen on which the layout is getting viewed
+         *
+         */
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //Imageview is used as shared Element in transition
-                //Check if it is TABLET in LANDSCAPE mode by checking whether detailFragment is present in xml or not
+                /**
+                 * ImageView is used as shared Element in transition
+                 * Check if it is TABLET in LANDSCAPE mode by checking whether detailFragment is present in xml or not
+                 */
+
                 if(detailFragment==null) {
                     ImageView iv = (ImageView) view.findViewById(R.id.picture);
                     android.support.v4.util.Pair<View, String> p1 = android.support.v4.util.Pair.create((View) iv, "POSTER");
@@ -211,6 +228,10 @@ public class PopularMoviesFragment extends Fragment{
             }
         });
 
+        /**
+         * This shows up when user selects Favorites filter and no movie is present in favorite database.
+         * So,we provide user with option to start browsing movies so he/she could start adding movies to FAV collection
+         */
         browse_movies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -227,6 +248,7 @@ public class PopularMoviesFragment extends Fragment{
 
     }
 
+    //Cancels all pending API calls
     @Override
     public void onPause() {
         super.onPause();
@@ -237,6 +259,7 @@ public class PopularMoviesFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        //This is done to ensure that we get latest details from favorites table when returning to this fragment..
         if(preferences!=null && preferences.getBoolean(FILTER_FAVORITES,false)){
             FetchFavorites();
         }
@@ -250,7 +273,7 @@ public class PopularMoviesFragment extends Fragment{
             getChildFragmentManager().beginTransaction().remove(dfrag).commitAllowingStateLoss();
         }
         ButterKnife.unbind(this);
-        bus.unregister(this);//unregister for events listening to removing favorites from the list..
+        bus.unregister(this);//unregister for Delete Event (event listening to removing favorites from the list inside detail fragment)
     }
 
     //Called when a movie is removed from Fav movie list..
@@ -274,11 +297,11 @@ public class PopularMoviesFragment extends Fragment{
                 FetchData(SORT_BY_RATING);
             }
             else if(preferences.getBoolean(FILTER_FAVORITES,false)){
-                //skip
+                //skip so that it is picked inside onResume()
             }
         }
         else if(preferences.getBoolean(FILTER_FAVORITES,false)){
-             //skip
+             //skip so that it is picked up inside onResume() when no internet connection is present..
         }
         else{
             NoInternetElements();

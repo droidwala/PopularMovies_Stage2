@@ -4,6 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * Helper class used to detect current Network status of device.
+ */
+
 public class ConnectionDetector {
 
     private Context mContext;

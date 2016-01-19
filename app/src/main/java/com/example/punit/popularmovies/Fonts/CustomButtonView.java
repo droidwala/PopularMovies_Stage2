@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+/**
+ * Custom Button to use custom font "mb.otf"
+ */
 public class CustomButtonView extends Button {
 
     public CustomButtonView(Context context) {

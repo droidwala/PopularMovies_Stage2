@@ -40,19 +40,32 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used to display search results got through Search Query made by user..
+ */
+
 public class SearchActivity extends AppCompatActivity {
 
+    //Views Initialization using ButterKnife..
     @Bind(R.id.toolbar) Toolbar tbar;
     @Bind(R.id.search_res_list) ListView lv;
     @Bind(R.id.progressBar) ProgressBar pbar;
     @Bind(R.id.no_result_txt) TextView error_msg;
+
+    //Instance variables
     EditText search_bar;
+    private ArrayList<Movie> movies;
+    SearchListAdapter adapter;
+
+    //Static variables..
     private static String SEARCH_BASE_URL ="http://api.themoviedb.org/3/search/movie?query=";
     private static String SEARCH_END_URL ="&api_key=";
     private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w342";
     private static String TAG="SEARCH";
-    private ArrayList<Movie> movies;
-    SearchListAdapter adapter;
+
+    /**
+     * Activity to deal with searching of movies using Search API..
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +81,7 @@ public class SearchActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        //Open detail activity screen on row click inside listview
+        //Handling Listview Item Clicks to show detail of particular movie..
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -104,7 +117,6 @@ public class SearchActivity extends AppCompatActivity {
                                     AppController.getInstance().cancelPendingRequests(TAG);
                                     try {
                                         String query =  URLEncoder.encode(charSequence.toString(), "utf-8");
-                                        Log.d("TAG","Do we come inside textchange");
                                         if(charSequence.length()>0)
                                         FetchData(SEARCH_BASE_URL + query + SEARCH_END_URL + getResources().getString(R.string.api_key));
                                     } catch (UnsupportedEncodingException e) {
@@ -121,13 +133,13 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+              //Nothing done here..
             }
         });
 
     }
 
-    //Cancel pending request on pause.
+    //Cancel pending API  request on pause.
     @Override
     protected void onPause() {
         super.onPause();
@@ -137,7 +149,6 @@ public class SearchActivity extends AppCompatActivity {
 
     //Search API call made using Volley
     private void FetchData(String URL){
-
         hideElements();
         error_msg.setVisibility(View.INVISIBLE);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
@@ -203,6 +214,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
+    //Inflating Menu Items..
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -214,10 +226,12 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            //Handling Back button clicks
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.clear_txt: //used to clear edittext
+            //Clear Edittext
+            case R.id.clear_txt:
                 AppController.getInstance().cancelPendingRequests(TAG);
                 pbar.setVisibility(View.INVISIBLE);
                 error_msg.setVisibility(View.INVISIBLE);

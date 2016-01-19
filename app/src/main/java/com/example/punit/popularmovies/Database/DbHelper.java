@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * DatabaseHelper to handle creating/upgrading of Favorites table inside Favorites.db
+ */
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Favorites.db";

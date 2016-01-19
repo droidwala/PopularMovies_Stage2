@@ -46,8 +46,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
+/**
+ * Used in Dual Pane (Tablet in Landscape mode) to display movie details side-by-side of Gridview of movies list.
+ */
 public class DetailFragment extends Fragment {
 
+    //Views initialization using ButterKnife
     @Bind(R.id.toolbar) Toolbar tbar;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.backdrop) ImageView backdrop;
@@ -57,6 +61,8 @@ public class DetailFragment extends Fragment {
     @Bind(R.id.release_date) TextView release_date;
     @Nullable @Bind(R.id.trailer_fab) FloatingActionButton fab;
     @Nullable @Bind(R.id.landscape_trailer_btn) Button land_trailer_btn;
+
+    //instance variables
     Movie movie;
     SimpleDateFormat format1,format2;
     Date date;
@@ -69,8 +75,7 @@ public class DetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        movie = getArguments().getParcelable("MOVIE");
-
+        movie = getArguments().getParcelable("MOVIE");//get movie object from PopularMoviesFragment as arguments..
     }
 
     @Nullable
@@ -81,38 +86,44 @@ public class DetailFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         format1 = new SimpleDateFormat("yyyy-MM-dd");
         format2 = new SimpleDateFormat("dd-MMM-yyyy");
 
+        //Inflate Menu attached to toolbar within fragment(not the one attached to activity)
         tbar.inflateMenu(R.menu.detail_menu);
         menuItem = tbar.getMenu().findItem(R.id.action_fav);
 
-        //Favorite Button logic
+        //Query database to check whether movie is marked as favorite or not and accordingly show FAV_ICON
         Cursor c = getParentFragment().getActivity().getContentResolver().query(DataProvider.FAV_PROVIDER_URI,null, DbHelper.MOVIE_ID + " = ?",new String[]{movie.getId()},null);
         if(c.getCount()>0){
-            Log.d("FAV","is_favorite is set to true");
             menuItem.setIcon(R.drawable.fav_red_icon);
             is_favorite = true;
         }
         else{
-            Log.d("FAV","is_favorite is set to false");
             menuItem.setIcon(R.drawable.fav_icon);
             is_favorite = false;
         }
-        if(c!=null && !c.isClosed())
+        if(c!=null && !c.isClosed()) {
             c.close();
+        }
 
-
+        //Setting up CollapsingToolbar Title.
         collapsingToolbarLayout.setTitle(movie.getTitle());
+        //Setting up Release Date Text
         release_date.setText(DateConversion(movie.getRelease_date()));
+
+        //Load movie poster images using Picasso
         loadBackdrop();
+        //Setting up Plot Text
         plot.setText(movie.getPlot());
+        //Setting up Rating & votes count text
         ratings.setText(String.valueOf((int)(movie.getRating()*10) + "%"));//converting rating to percentage format.
         votes.setText(movie.getVotes() + " votes");
+
+        //Null check since Fab button is not present in Landscape mode..
         if(fab!=null)
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,7 +135,7 @@ public class DetailFragment extends Fragment {
                     startActivity(i);
                 }
             });
-
+         //Null check since Land Trailer button is not present in Portrait mode..
         if(land_trailer_btn!=null)
             land_trailer_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,6 +148,7 @@ public class DetailFragment extends Fragment {
                 }
             });
 
+
         if(tbar!=null){
             tbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
@@ -144,25 +156,25 @@ public class DetailFragment extends Fragment {
                     switch (item.getItemId()){
                         case R.id.action_fav:
                             if(is_favorite){
-                                Log.d("FAV","WE ARE DELETING FAV BRO!!");
-                                //delete
                                 final AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(getActivity().getContentResolver()) {
                                     @Override
                                     protected void onDeleteComplete(int token, Object cookie, int result) {
                                         super.onDeleteComplete(token, cookie, result);
                                         menuItem.setIcon(R.drawable.fav_icon);
                                         is_favorite = false;
+                                        /**
+                                         *Post Delete Event using EventBus library which is well received inside OnEvent() method of PopularMoviesFragment
+                                         * This is particular useful when you are viewing Favorite Movies inside PopularMoviesFragment and want to update left side fragment view
+                                         * with updated data from database.
+                                         */
                                         DeleteEvent event = new DeleteEvent(true);
                                         bus.post(event);
-                                        Log.d("XYZA","We have deleted favorite");
                                     }
                                 };
                                 asyncQueryHandler.startDelete(1,null, DataProvider.FAV_PROVIDER_URI, DbHelper.MOVIE_ID + " = ?",new String[]{movie.getId()});
 
                             }
                             else{
-
-                                Log.d("FAV","WE ARE INSERTING FAV BRO!!");
                                 final ContentValues cv = new ContentValues();
                                 cv.put(DbHelper.MOVIE_ID, movie.getId());
                                 cv.put(DbHelper.MOVIE_TITLE, movie.getTitle());
@@ -179,15 +191,12 @@ public class DetailFragment extends Fragment {
                                     }
                                 };
                                 if(!CheckIfImageExists()) {
-                                    Log.d("TAG","Downloading");
                                     Picasso.with(getActivity())
                                             .load(movie.getPoster())
                                             .into(new Target() {
                                                 @Override
                                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                                    //saveToInternalStorage(bitmap);
                                                     cv.put(DbHelper.MOVIE_IMG_URL, saveToInternalStorage(bitmap));
-                                                    //Log.d("TAG", saveToInternalStorage(bitmap));
                                                     asyncQueryHandler.startInsert(2,null,DataProvider.FAV_PROVIDER_URI,cv);
                                                 }
 
@@ -203,9 +212,7 @@ public class DetailFragment extends Fragment {
                                             });
                                 }
                                 else{
-                                    Log.d("TAG","Not Downloading");
                                     cv.put(DbHelper.MOVIE_IMG_URL, ExistingImagePath());
-                                    Log.d("TAG", ExistingImagePath());
                                     asyncQueryHandler.startInsert(2,null,DataProvider.FAV_PROVIDER_URI,cv);
                                 }
                             }
@@ -234,10 +241,9 @@ public class DetailFragment extends Fragment {
     }
 
 
+    //Using Arguments value passed on from Left side fragment we decide whether to load image from internal storage or from web.
     private void loadBackdrop(){
         if(getArguments().getBoolean("IMAGE_LOCAL")){
-            Log.d("STACK", "We are loading images from local storage");
-            Log.d("STACK",movie.getPoster());
             Picasso.with(getActivity()).load(new File(movie.getPoster())).into(backdrop);
         }
         else {
@@ -258,6 +264,7 @@ public class DetailFragment extends Fragment {
         return dateString;
     }
 
+    //Same logic done as in DetailActivity
     private String saveToInternalStorage(Bitmap bitmap){
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File dir = cw.getDir("Favorites", Context.MODE_PRIVATE);
@@ -281,6 +288,7 @@ public class DetailFragment extends Fragment {
         return path.getAbsolutePath();
     }
 
+    //Same logic as done in DetailActivity.
     private boolean CheckIfImageExists(){
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File dir = cw.getDir("Favorites", Context.MODE_PRIVATE);
@@ -292,6 +300,7 @@ public class DetailFragment extends Fragment {
             return false;
     }
 
+    //Same logic done as in DetailActivity
     private String ExistingImagePath(){
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File dir = cw.getDir("Favorites", Context.MODE_PRIVATE);
@@ -303,26 +312,4 @@ public class DetailFragment extends Fragment {
             return null;
     }
 
-    /*
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.detail_menu,menu);
-        menuItem = menu.findItem(R.id.action_fav);
-        Cursor c = getActivity().getContentResolver().query(DataProvider.FAV_PROVIDER_URI,null, DbHelper.MOVIE_ID + " = ?",new String[]{movie.getId()},null);
-        if(c.getCount()>0){
-            Log.d("FAV","is_favorite is set to true");
-            menuItem.setIcon(R.drawable.fav_red_icon);
-            is_favorite = true;
-        }
-        else{
-            Log.d("FAV","is_favorite is set to false");
-            menuItem.setIcon(R.drawable.fav_icon);
-            is_favorite = false;
-        }
-        if(c!=null && !c.isClosed())
-            c.close();
-
-    }
-    */
 }

@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
+/**
+ * POJO class Review to store review details..
+ */
 public class Review implements Parcelable,Serializable{
   private String review;
   private String reviewer;

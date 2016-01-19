@@ -30,15 +30,23 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Used during Dual Pane Layout mode (Tablet in Landscape mode) inside DetailFragment to display casts details..
+ */
 public class DualPaneCastFragment extends Fragment {
 
+    //Views Initialization using ButterKnife..
     @Bind(R.id.rv) RecyclerView rv;
     @Bind(R.id.progressBar) ProgressBar pbar;
-    CastRvAdapter adapter;
+
+    //static variables..
     private static String BASE_START_URL = "http://api.themoviedb.org/3/movie/";
     private static String BASE_END_URL="/credits?api_key=";
     private static String REQUEST_TAG ="CAST";
     private static String IMAGE_BASE_PATH ="http://image.tmdb.org/t/p/w342";
+
+    //instance variables..
+    CastRvAdapter adapter;
     private static ArrayList<Cast> casts;
     Movie movie;
 
@@ -47,6 +55,7 @@ public class DualPaneCastFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         casts = new ArrayList<Cast>();
+        //Fetch casts from Bundle to avoid re-fetching during orientation changes..
         if(savedInstanceState!=null){
             casts = (ArrayList<Cast>) savedInstanceState.getSerializable("CAST");
         }
@@ -64,6 +73,7 @@ public class DualPaneCastFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         movie = getParentFragment().getArguments().getParcelable("MOVIE");
+        //Avoid Re-fetching during orientation changes using below logic..
         if(casts.size()>0){
             adapter = new CastRvAdapter(getActivity(),casts);
             LinearLayoutManager llm = new LinearLayoutManager(getParentFragment().getActivity());
@@ -80,9 +90,9 @@ public class DualPaneCastFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
     }
 
+    //Cancel pending Cast Details API call once the view is destroyed..
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -91,7 +101,6 @@ public class DualPaneCastFragment extends Fragment {
     }
 
     private void FetchData(){
-        Log.d("FRAGS", "We come inside FetchData of CastFragment");
         hideElements();
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 BASE_START_URL + movie.getId() + BASE_END_URL + getResources().getString(R.string.api_key),null,new Response.Listener<JSONObject>() {
@@ -137,6 +146,7 @@ public class DualPaneCastFragment extends Fragment {
         rv.setVisibility(View.VISIBLE);
     }
 
+    //Save casts ArrayList during orientation changes ..
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

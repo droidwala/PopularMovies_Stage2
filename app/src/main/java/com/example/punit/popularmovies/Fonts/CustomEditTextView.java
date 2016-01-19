@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * Custom EditTextView to use custom Font inside SearchActivity..
+ */
 public class CustomEditTextView extends EditText {
 
     public CustomEditTextView(Context context) {

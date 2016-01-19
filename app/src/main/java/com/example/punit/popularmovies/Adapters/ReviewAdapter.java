@@ -13,6 +13,9 @@ import com.example.punit.popularmovies.R;
 
 import java.util.ArrayList;
 
+/**
+ * Used by All_Reviews_Activity to display all reviews for particular movie using recyclerviews..
+ */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RVHolder> {
 
     private Context mContext;
@@ -36,13 +39,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RVHolder> 
         holder.review.setText(reviews.get(position).getReview());
     }
 
-
-
     @Override
     public int getItemCount() {
         return reviews.size();
     }
-
 
     public static class RVHolder extends RecyclerView.ViewHolder{
 

@@ -2,6 +2,9 @@ package com.example.punit.popularmovies.Helpers;
 
 import java.io.Serializable;
 
+/**
+ * POJO CAST class to store cast details..
+ */
 public class Cast implements Serializable {
     private String cast_name;
     private String cast_image;

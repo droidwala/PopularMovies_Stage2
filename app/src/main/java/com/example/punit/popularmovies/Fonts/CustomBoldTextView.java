@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+/**
+ * Custom Textview to use font "mb.otf"
+ */
 public class CustomBoldTextView extends TextView {
 
     public CustomBoldTextView(Context context) {

@@ -18,17 +18,18 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * Used inside PopularMoviesFragment to populate popular_movies,highly_rated_movies,etc.
+ */
 public class GridAdapter extends ArrayAdapter<String> {
 
     private ArrayList<Movie> movies = new ArrayList<Movie>();
     private Context mContext;
-    boolean is_fav;
 
     public GridAdapter(Context context, int resource,ArrayList<Movie> movies) {
         super(context, resource);
         mContext = context;
         this.movies = movies;
-
     }
 
 

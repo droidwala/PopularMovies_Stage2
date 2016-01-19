@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-
+/**
+ * POJO class Movie to store movie details..
+ */
 //make it implement parcelable so as to able to pass movie object as bundle between activities
 // AND
 // implement serializable to able to save movie object as bundle during orientation changes.
