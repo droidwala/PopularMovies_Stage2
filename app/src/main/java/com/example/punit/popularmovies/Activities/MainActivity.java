@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 
 import com.example.punit.popularmovies.Fragments.GenreFragment;
+import com.example.punit.popularmovies.Fragments.GsonUpcomingMoviesFragment;
 import com.example.punit.popularmovies.Fragments.PopularMoviesFragment;
 import com.example.punit.popularmovies.Fragments.UpcomingMoviesFragment;
 import com.example.punit.popularmovies.R;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
     private PopularMoviesFragment pfragment;
     private UpcomingMoviesFragment upcomingMoviesFragment;
+    private GsonUpcomingMoviesFragment gsonUpcomingMoviesFragment;
     private GenreFragment genreFragment;
     private FragmentManager fmanager;
 
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 pfragment = (PopularMoviesFragment) getSupportFragmentManager().getFragment(savedInstanceState, "popular");
             }
             else if(savedInstanceState.containsKey("upcoming")) {
-                upcomingMoviesFragment = (UpcomingMoviesFragment) getSupportFragmentManager().getFragment(savedInstanceState, "upcoming");
+                gsonUpcomingMoviesFragment = (GsonUpcomingMoviesFragment) getSupportFragmentManager().getFragment(savedInstanceState, "upcoming");
             }
             else if(savedInstanceState.containsKey("genre")) {
                 genreFragment = (GenreFragment) getSupportFragmentManager().getFragment(savedInstanceState, "genre");
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pfragment = null;
-        upcomingMoviesFragment = null;
+        gsonUpcomingMoviesFragment = null;
         genreFragment = null;
     }
 
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate( Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(upcomingMoviesFragment!=null || genreFragment!=null){
+        if(gsonUpcomingMoviesFragment!=null || genreFragment!=null){
             toggle.setDrawerIndicatorEnabled(false);
         }
         else {
@@ -154,13 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Adding Upcoming movies fragment to stack
     private void showUpcomingMoviesFragment(){
-        if(upcomingMoviesFragment==null){
-            upcomingMoviesFragment = new UpcomingMoviesFragment();
+        if(gsonUpcomingMoviesFragment == null){
+            gsonUpcomingMoviesFragment = new GsonUpcomingMoviesFragment();
         }
-        if(!upcomingMoviesFragment.isVisible()){
+        if(!gsonUpcomingMoviesFragment.isVisible()){
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
-            fmanager.beginTransaction().replace(R.id.content,upcomingMoviesFragment).addToBackStack(null).commit();
+            fmanager.beginTransaction().replace(R.id.content,gsonUpcomingMoviesFragment).addToBackStack(null).commit();
         }
     }
 
@@ -221,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
         if(pfragment!=null && pfragment.isVisible()) {
             fmanager.putFragment(outState, "popular",pfragment);
         }
-        else if(upcomingMoviesFragment!=null && upcomingMoviesFragment.isVisible()){
-            fmanager.putFragment(outState,"upcoming",upcomingMoviesFragment);
+        else if(gsonUpcomingMoviesFragment!=null && gsonUpcomingMoviesFragment.isVisible()){
+            fmanager.putFragment(outState,"upcoming",gsonUpcomingMoviesFragment);
         }
         else if(genreFragment!=null && genreFragment.isVisible()){
             fmanager.putFragment(outState,"genre",genreFragment);
