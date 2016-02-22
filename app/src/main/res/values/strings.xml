@@ -16,7 +16,7 @@
     <string name="scifi_movies">SCI-FI</string>
     <string name="family_movies">FAMILY</string>
     <string name="fantasy_movies">FANTASY</string>
-    <string name="api_key">9a1a22a077e8cb57f2e0267fa3bd4ea9</string>
+    <string name="api_key"></string>
     <string name="sort_by_header">SORT BY</string>
     <string name="radio_btn_popular">POPULARITY</string>
     <string name="radio_btn_rating">RATING</string>
